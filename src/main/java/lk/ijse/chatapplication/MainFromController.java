@@ -1,4 +1,4 @@
-package lk.ijse.chatapplication.controller;
+package lk.ijse.chatapplication;
 
 import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXML;
