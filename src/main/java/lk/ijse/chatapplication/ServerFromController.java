@@ -1,31 +1,30 @@
 package lk.ijse.chatapplication;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ServerFromController {
-    DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
     String message = "";
+    private ArrayList<ConnectionHandler> connectionHandlers = new ArrayList<>();
     public void Server() throws IOException {
-
-            ServerSocket serverSocket =new ServerSocket(3000);
+        ServerSocket serverSocket =new ServerSocket(3000);
+        Socket socket;
+        while (true) {
             System.out.println("Server Started !");
-            Socket socket = serverSocket.accept();
+            socket = serverSocket.accept();
             System.out.println("\nClient Connected !");
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            dataInputStream = new DataInputStream(socket.getInputStream());
+            ConnectionHandler connectionHandler = new ConnectionHandler(socket,connectionHandlers);
+            connectionHandlers.add(connectionHandler);
+            connectionHandler.run();
 
-            while (!message.equals("End")){
-                message = dataInputStream.readUTF();
-                System.out.println("\nClient: " + message);
-            }
 
-            dataInputStream.close();
-            dataOutputStream.close();
-            socket.close();
+           /* dataInputStream = new DataInputStream(socket.getInputStream());
+            message = dataInputStream.readUTF();
+            System.out.println("\nClient: " + message);*/
+        }
     }
 }
