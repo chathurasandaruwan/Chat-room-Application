@@ -19,7 +19,7 @@ public class ServerFromController {
             System.out.println("\nClient Connected !");
             ConnectionHandler connectionHandler = new ConnectionHandler(socket,connectionHandlers);
             connectionHandlers.add(connectionHandler);
-            connectionHandler.run();
+            connectionHandler.start();
 
 
            /* dataInputStream = new DataInputStream(socket.getInputStream());

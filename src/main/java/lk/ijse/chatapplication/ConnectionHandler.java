@@ -1,35 +1,37 @@
 package lk.ijse.chatapplication;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ConnectionHandler implements Runnable{
+public class ConnectionHandler extends Thread{
     private Socket client;
     private BufferedReader in;
     private PrintWriter out;
+    DataOutputStream dataOutputStream;
+    DataInputStream dataInputStream;
     ArrayList<ConnectionHandler> clientsArrayList;
 
 
     public ConnectionHandler(Socket socket, ArrayList<ConnectionHandler> clientsArrayList) throws IOException {
         this.client = socket;
         this.clientsArrayList = clientsArrayList;
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new PrintWriter(socket.getOutputStream(), true);
+        this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        this.dataInputStream = new DataInputStream(socket.getInputStream());
+       /* this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);*/
     }
     @Override
     public void run() {
         try {
-            out =new PrintWriter(client.getOutputStream(),true);
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            dataOutputStream = new DataOutputStream(client.getOutputStream());
+            dataInputStream = new DataInputStream(client.getInputStream());
 
             String message;
-            while ((message= in.readLine()) != null) {
-                if (message.startsWith("/quit")) {
-                    shutDown();
+            while ((message= dataInputStream.readUTF()) != null) {
+                if (message.startsWith("end")) {
+                    System.exit(0);
+
                 }else {
                     sendMessage(message);
                 }
@@ -39,9 +41,12 @@ public class ConnectionHandler implements Runnable{
         }
 
     }
-    public void sendMessage(String message){
+    public void sendMessage(String message) throws IOException {
         for (ConnectionHandler connectionHandler : clientsArrayList) {
-            connectionHandler.out.println(message);
+            //connectionHandler.out.println(message);
+            connectionHandler.dataOutputStream.writeUTF(message);
+            dataOutputStream.flush();
+            System.out.println(message);
         }
     }
 

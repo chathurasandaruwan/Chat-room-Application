@@ -16,7 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientFromController {
+public class ClientFromController extends Thread{
     @FXML
     private Label lblUserName;
 
@@ -36,40 +36,41 @@ public class ClientFromController {
     private Button btnSend;
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
+    Socket socket;
     String message = "";
     public void initialize() {
         lblUserName.setText(LoggingFromController.name);
         showMessage();
     }
     public void showMessage(){
-        new Thread(()->{
+
             try {
-                Socket socket = new Socket("localhost", 3000);
+                socket = new Socket("localhost", 3000);
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 dataInputStream = new DataInputStream(socket.getInputStream());
+                this.start();
 
-
-                while (!message.equals("End")){
+               /* while (!message.equals("End")){
                     message = dataInputStream.readUTF();
                     textArea.appendText("\nServer: "+message);
                 }
                 dataInputStream.close();
                 dataOutputStream.close();
-                socket.close();
+                socket.close();*/
 
             } catch(IOException e){
                 throw new RuntimeException(e);
             }
-        }).start();
-
     }
 
     @FXML
     void btnSendOnAction(ActionEvent event) throws IOException {
-        message = textMessage.getText();
-        textArea.appendText("\nMe : "+message);
-        dataOutputStream.writeUTF(message);
+        String name = lblUserName.getText();
+        message = name+" : "+textMessage.getText();
+        //textArea.appendText("\nMe : "+message);
+        dataOutputStream.writeUTF(message+"\n\n");
         dataOutputStream.flush();
+        textMessage.clear();
     }
 
     @FXML
@@ -77,4 +78,26 @@ public class ClientFromController {
         System.out.print("Image send");
     }
 
+    @Override
+    public void run() {
+        while (true){
+            try {
+                String end="end";
+                String msg = dataInputStream.readUTF();
+                if (msg.equals(end)) {
+                    System.exit(0);
+                }else {
+                    textArea.appendText(msg);
+                }
+
+
+                /*if (message!=null){*/
+                   // textArea.appendText(message);
+                //}
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
 }
