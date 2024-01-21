@@ -50,14 +50,6 @@ public class ClientFromController extends Thread{
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 this.start();
 
-               /* while (!message.equals("End")){
-                    message = dataInputStream.readUTF();
-                    textArea.appendText("\nServer: "+message);
-                }
-                dataInputStream.close();
-                dataOutputStream.close();
-                socket.close();*/
-
             } catch(IOException e){
                 throw new RuntimeException(e);
             }
@@ -67,10 +59,13 @@ public class ClientFromController extends Thread{
     void btnSendOnAction(ActionEvent event) throws IOException {
         String name = lblUserName.getText();
         message = name+" : "+textMessage.getText();
-        //textArea.appendText("\nMe : "+message);
         dataOutputStream.writeUTF(message+"\n\n");
         dataOutputStream.flush();
         textMessage.clear();
+        if(message.equalsIgnoreCase("BYE") || (message.equalsIgnoreCase("logout"))) {
+            System.exit(0);
+
+        }
     }
 
     @FXML
@@ -89,11 +84,6 @@ public class ClientFromController extends Thread{
                 }else {
                     textArea.appendText(msg);
                 }
-
-
-                /*if (message!=null){*/
-                   // textArea.appendText(message);
-                //}
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

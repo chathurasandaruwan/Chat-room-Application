@@ -18,8 +18,6 @@ public class ConnectionHandler extends Thread{
         this.clientsArrayList = clientsArrayList;
         this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
         this.dataInputStream = new DataInputStream(socket.getInputStream());
-       /* this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new PrintWriter(socket.getOutputStream(), true);*/
     }
     @Override
     public void run() {
@@ -43,7 +41,6 @@ public class ConnectionHandler extends Thread{
     }
     public void sendMessage(String message) throws IOException {
         for (ConnectionHandler connectionHandler : clientsArrayList) {
-            //connectionHandler.out.println(message);
             connectionHandler.dataOutputStream.writeUTF(message);
             dataOutputStream.flush();
             System.out.println(message);

@@ -20,11 +20,6 @@ public class ServerFromController {
             ConnectionHandler connectionHandler = new ConnectionHandler(socket,connectionHandlers);
             connectionHandlers.add(connectionHandler);
             connectionHandler.start();
-
-
-           /* dataInputStream = new DataInputStream(socket.getInputStream());
-            message = dataInputStream.readUTF();
-            System.out.println("\nClient: " + message);*/
         }
     }
 }
