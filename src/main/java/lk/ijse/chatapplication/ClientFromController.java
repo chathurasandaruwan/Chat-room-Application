@@ -17,6 +17,7 @@ import javafx.scene.text.TextFlow;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class ClientFromController extends Thread{
     @FXML
@@ -33,8 +34,6 @@ public class ClientFromController extends Thread{
 
     @FXML
     private Button btnSend;
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
     private BufferedReader in;
     private PrintWriter out;
     Socket socket;
@@ -47,8 +46,6 @@ public class ClientFromController extends Thread{
 
             try {
                 socket = new Socket("localhost", 3000);
-               /* dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                dataInputStream = new DataInputStream(socket.getInputStream());*/
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
                 this.start();
@@ -60,11 +57,8 @@ public class ClientFromController extends Thread{
 
     @FXML
     void btnSendOnAction(ActionEvent event) throws IOException {
-        String name = lblUserName.getText();
-        message = name+" : "+textMessage.getText();
-       /* dataOutputStream.writeUTF(message+"\n\n");
-        dataOutputStream.flush();*/
-        out.println(message);
+        String msg = textMessage.getText();
+        out.println(lblUserName.getText() + ": " + msg);
         textMessage.clear();
         if(message.equalsIgnoreCase("BYE") || (message.equalsIgnoreCase("logout"))) {
             System.exit(0);
@@ -79,9 +73,9 @@ public class ClientFromController extends Thread{
 
     @Override
     public void run() {
-        while (true){
+       while (true){
             try {
-                /*String msg = dataInputStream.readUTF();*/
+
                 String msg = in.readLine();
                 String[] tokens = msg.split(" ");
                 String cmd = tokens[0];
@@ -133,10 +127,67 @@ public class ClientFromController extends Thread{
                     hBox.getChildren().add(flow2);
                 }
                 Platform.runLater(() -> messageArea.getChildren().addAll(hBox));
+
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+
+        }
+        /*try {
+            while (true) {
+                String msg = in.readLine();
+                processMessage(msg);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+*/
+    }
+    private void processMessage(String msg) {
+        String[] tokens = msg.split(" ");
+        String cmd = tokens[0];
+        String fullMsg = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
+
+        TextFlow tempFlow = new TextFlow();
+
+        if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
+            Text txtName = new Text(cmd + " ");
+            txtName.getStyleClass().add("txtName");
+            tempFlow.getChildren().add(txtName);
         }
 
+        Text text = new Text(fullMsg);
+        tempFlow.getChildren().add(text);
+        tempFlow.setMaxWidth(200);
+
+        HBox hBox = createMessageBox(tempFlow, cmd, fullMsg);
+
+        Platform.runLater(() -> messageArea.getChildren().addAll(hBox));
+    }
+
+    private HBox createMessageBox(TextFlow tempFlow, String cmd, String fullMsg) {
+        HBox hBox = new HBox(12);
+        hBox.setStyle("-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
+
+        if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
+            // Message from other users, align left
+            messageArea.setAlignment(Pos.TOP_LEFT);
+            hBox.setAlignment(Pos.CENTER_LEFT);
+            tempFlow.setStyle("-fx-background-color: white;-fx-background-radius:15;" +
+                    "-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: black;-fx-wrap-text: true;" +
+                    "-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+        } else {
+            // Message from the local user, align right
+            Text text2 = new Text(fullMsg + ": Me");
+            TextFlow flow2 = new TextFlow(text2);
+            hBox.setAlignment(Pos.BOTTOM_RIGHT);
+            flow2.setStyle("-fx-background-color: #CCFF9A;-fx-background-radius:15;" +
+                    "-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;" +
+                    "-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+        }
+
+        hBox.getChildren().add(tempFlow);
+        return hBox;
     }
 }

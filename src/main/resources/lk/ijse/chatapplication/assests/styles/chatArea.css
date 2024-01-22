@@ -1,0 +1,40 @@
+/* styles.css */
+
+.text-name {
+    -fx-font-weight: bold;
+}
+
+.message-box {
+    -fx-fill-height: true;
+    -fx-min-height: 50;
+    -fx-pref-width: 520;
+    -fx-max-width: 520;
+    -fx-padding: 10;
+}
+
+.message-box-left {
+    -fx-alignment: center-left;
+}
+
+.message-box-right {
+    -fx-alignment: center-right;
+}
+
+.text-flow {
+    -fx-background-radius: 15;
+    -fx-font-size: 15;
+    -fx-font-weight: normal;
+    -fx-wrap-text: true;
+    -fx-padding: 10;
+    -fx-max-width: 350;
+}
+
+.text-flow-left {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.text-flow-right {
+    -fx-background-color: #CCFF9A;
+    -fx-text-fill: white;
+}
