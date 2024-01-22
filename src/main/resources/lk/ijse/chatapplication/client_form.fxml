@@ -22,7 +22,7 @@
             </ImageView>
          </children>
       </Pane>
-      <TextField fx:id="textMessage" layoutX="41.0" layoutY="634.0" prefHeight="37.0" prefWidth="620.0" promptText="Type a Message" style="-fx-background-radius: 6;" />
+      <TextField fx:id="textMessage" layoutX="41.0" layoutY="634.0" onAction="#textMessageOnAction" prefHeight="37.0" prefWidth="620.0" promptText="Type a Message" style="-fx-background-radius: 6;" />
       <Button fx:id="btnSend" layoutX="757.0" layoutY="634.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="37.0" prefWidth="97.0" style="-fx-background-color: #26b344  #26b344;" text="Send" textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />

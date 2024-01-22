@@ -8,30 +8,22 @@ public class ConnectionHandler extends Thread{
     Socket client;
     private BufferedReader in;
     private PrintWriter out;
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
     ArrayList<ConnectionHandler> clientsArrayList;
 
 
     public ConnectionHandler(Socket socket, ArrayList<ConnectionHandler> clientsArrayList) throws IOException {
         this.client = socket;
         this.clientsArrayList = clientsArrayList;
-        /*this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        this.dataInputStream = new DataInputStream(socket.getInputStream());*/
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
     }
     @Override
     public void run() {
         try {
-           /* dataOutputStream = new DataOutputStream(client.getOutputStream());
-            dataInputStream = new DataInputStream(client.getInputStream());*/
-
-
             String message;
             while ((message= in.readLine()) != null) {
-                if (message.equalsIgnoreCase( "exit")) {
-                    break;
+                if (message.endsWith("bye")) {
+                   System.exit(0);
                 }else {
                     sendMessage(message);
                 }
@@ -45,8 +37,6 @@ public class ConnectionHandler extends Thread{
     }
     public void sendMessage(String message) throws IOException {
         for (ConnectionHandler connectionHandler : clientsArrayList) {
-            /*connectionHandler.dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();*/
             connectionHandler.out.println(message);
             System.out.println(message);
         }
