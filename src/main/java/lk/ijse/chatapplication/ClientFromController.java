@@ -98,11 +98,11 @@ public class ClientFromController extends Thread{
                 }
 
                 Text text = new Text(st);
-               /* String firstChars = "";
+                String firstChars = "";
                 if (st.length() > 3) {
                     firstChars = st.substring(0, 3);
                 }
-*/
+
                 TextFlow tempFlow = new TextFlow();
 
                 if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
