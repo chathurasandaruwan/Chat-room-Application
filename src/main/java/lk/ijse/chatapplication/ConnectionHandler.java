@@ -22,7 +22,7 @@ public class ConnectionHandler extends Thread{
         try {
             String message;
             while ((message= in.readLine()) != null) {
-                if (message.endsWith("bye")) {
+                if (message.endsWith("cl")) {
                    System.exit(0);
                 }else {
                     sendMessage(message);

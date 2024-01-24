@@ -27,7 +27,7 @@ public class ClientFromController extends Thread{
     private Label lblUserName;
 
     @FXML
-    private static VBox messageArea;
+    private VBox messageArea;
 
     @FXML
     private ImageView cameraIcon;
@@ -40,6 +40,8 @@ public class ClientFromController extends Thread{
     private BufferedReader in;
     private PrintWriter out;
     Socket socket;
+    FileChooser fileChooser = new FileChooser();
+    File selectedFile;
     public void initialize() {
         lblUserName.setText(LoggingFromController.name);
         showMessage();
@@ -69,25 +71,14 @@ public class ClientFromController extends Thread{
     @FXML
     void sendImage(MouseEvent event) throws IOException {
         Stage primaryStage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose an Image File");
+        fileChooser.setTitle("Choose an Image File");/*
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
-        );
+        );*/
+        this.selectedFile = fileChooser.showOpenDialog(primaryStage);
+        out.println(lblUserName.getText() + " " + "img" + selectedFile.getPath());
 
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-        if (selectedFile != null) {
-            String msg = in.readLine();
-            String imagePath = selectedFile.getAbsolutePath();
-            System.out.println("Selected Image Path: " + imagePath);
-            imagePath = msg.substring(6);
-            Image image = new Image(getClass().getResourceAsStream(imagePath));
-            ClientFromController.sendImageMessage(image);
-        } else {
-            System.out.println("No file selected.");
-        }
     }
 
     @Override
@@ -112,6 +103,43 @@ public class ClientFromController extends Thread{
 
                     Text text = new Text(st);
 
+                String firstChars = "";
+                if (st.length() > 3) {
+                    firstChars = st.substring(0, 3);
+                }
+
+                if (firstChars.equalsIgnoreCase("img")) {
+
+                    st = st.substring(3, st.length() - 1);
+
+                    File file = new File(st);
+                    Image image = new Image(file.toURI().toString());
+
+                        ImageView newImageView = new ImageView(image);
+                        newImageView.setFitWidth(150);
+                        newImageView.setFitHeight(100);
+
+                        HBox newImageMessageBox = new HBox(10);
+                        newImageMessageBox.setAlignment(Pos.BOTTOM_RIGHT);
+
+                    if (!cmd.equalsIgnoreCase(lblUserName.getText())) {
+                        messageArea.setAlignment(Pos.TOP_LEFT);
+                        newImageMessageBox.setAlignment(Pos.CENTER_LEFT);
+                        Text text1 = new Text("  " + cmd + " :");
+                        newImageMessageBox.getChildren().add(text1);
+                        newImageMessageBox.getChildren().add(newImageView);
+                        newImageMessageBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                    }else {
+                        messageArea.setAlignment(Pos.BOTTOM_RIGHT);
+                        Text text1 = new Text(": Me");
+                        newImageMessageBox.getChildren().add(text1);
+                        newImageMessageBox.getChildren().add(newImageView);
+                        newImageMessageBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                    }
+                    Platform.runLater(() -> messageArea.getChildren().addAll(newImageMessageBox));
+
+                }else {
+
                     TextFlow tempFlow = new TextFlow();
 
                     if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
@@ -130,7 +158,7 @@ public class ClientFromController extends Thread{
                     if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
                         messageArea.setAlignment(Pos.TOP_LEFT);
                         hBox.setAlignment(Pos.CENTER_LEFT);
-                        hBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
+                        hBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                         flow.setStyle("-fx-background-color:  #1988bb;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                         hBox.getChildren().add(flow);
                     } else {
@@ -141,23 +169,15 @@ public class ClientFromController extends Thread{
                         flow2.setStyle("-fx-background-color:  #3dd3d0 ;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                         hBox.getChildren().add(flow2);
                     }
-                    Platform.runLater(() -> messageArea.getChildren().addAll(hBox));
 
+                    Platform.runLater(() -> messageArea.getChildren().addAll(hBox));
+                }
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
         }
-    }
-    public static void sendImageMessage(Image image) {
-        ImageView newImageView = new ImageView(image);
-        newImageView.setFitWidth(100);
-        newImageView.setFitHeight(100);
-        newImageView.setPreserveRatio(true);
-
-        HBox newImageMessageBox = new HBox(newImageView);
-        messageArea.getChildren().add(newImageMessageBox);
     }
     @FXML
     void textMessageOnAction(ActionEvent event) throws IOException {
