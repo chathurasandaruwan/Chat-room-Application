@@ -13,16 +13,21 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #1988bb;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.chatapplication.ClientFromController">
    <children>
-      <Pane layoutX="40.0" layoutY="634.0" prefHeight="37.0" prefWidth="662.0">
+      <Pane layoutX="40.0" layoutY="634.0" prefHeight="37.0" prefWidth="662.0" style="-fx-background-color: white; -fx-background-radius: 6;">
          <children>
-            <ImageView fx:id="cameraIcon" fitHeight="45.0" fitWidth="47.0" layoutX="618.0" layoutY="-3.0" onMouseClicked="#sendImage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="cameraIcon" fitHeight="45.0" fitWidth="47.0" layoutX="626.0" layoutY="-3.0" onMouseClicked="#sendImage" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@assests/images/cameraIcon.png" />
                </image>
             </ImageView>
+            <ImageView fx:id="emogiIcon" fitHeight="32.0" fitWidth="32.0" layoutX="587.0" layoutY="3.0" onMouseClicked="#emogiIconOnAction" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@assests/images/emoji.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
-      <TextField fx:id="textMessage" layoutX="41.0" layoutY="634.0" onAction="#textMessageOnAction" prefHeight="37.0" prefWidth="620.0" promptText="Type a Message" style="-fx-background-radius: 6;" />
+      <TextField fx:id="textMessage" layoutX="41.0" layoutY="634.0" onAction="#textMessageOnAction" prefHeight="37.0" prefWidth="577.0" promptText="Type a Message" style="-fx-background-radius: 6;" />
       <Button fx:id="btnSend" layoutX="757.0" layoutY="634.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="37.0" prefWidth="97.0" style="-fx-background-color: #26b344  #26b344;" text="Send" textFill="WHITE">
          <font>
             <Font name="System Bold" size="16.0" />

@@ -1,11 +1,21 @@
 package lk.ijse.chatapplication;
 
+import com.vdurmont.emoji.Emoji;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import com.vdurmont.emoji.EmojiLoader;
+import com.vdurmont.emoji.EmojiManager;
+import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +23,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
@@ -37,6 +49,9 @@ public class ClientFromController extends Thread{
 
     @FXML
     private Button btnSend;
+    @FXML
+    private ImageView emogiIcon;
+
     private BufferedReader in;
     private PrintWriter out;
     Socket socket;
@@ -80,6 +95,26 @@ public class ClientFromController extends Thread{
         out.println(lblUserName.getText() + " " + "img" + selectedFile.getPath());
 
     }
+    @FXML
+    void emogiIconOnAction(MouseEvent event) {
+        ObservableList<Emoji> emojiList = FXCollections.observableArrayList(EmojiManager.getAll());
+        Stage primaryStage = new Stage();
+        ListView<Emoji> listView = new ListView<>(emojiList);
+        listView.setCellFactory(param -> new EmojiCell());
+
+        VBox root = new VBox(listView);
+        Scene scene = new Scene(root, 60, 400);
+
+        primaryStage.setTitle("Emoji Selector");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+        /*String emojiCode = ":smile:";
+        String emojiCharacter = EmojiParser.parseToUnicode(emojiCode);
+        out.println(emojiCharacter);*/
+
+    }
 
     @Override
     public void run() {
@@ -92,7 +127,7 @@ public class ClientFromController extends Thread{
 
                     StringBuilder fullMsg = new StringBuilder();
                     for (int i = 1; i < tokens.length; i++) {
-                        fullMsg.append(tokens[i] + " ");
+                        fullMsg.append(tokens[i]).append(" ");
                     }
 
                     String[] msgToAr = msg.split(" ");
@@ -116,7 +151,7 @@ public class ClientFromController extends Thread{
                     Image image = new Image(file.toURI().toString());
 
                         ImageView newImageView = new ImageView(image);
-                        newImageView.setFitWidth(150);
+                        newImageView.setFitWidth(100);
                         newImageView.setFitHeight(100);
 
                         HBox newImageMessageBox = new HBox(10);
@@ -130,7 +165,7 @@ public class ClientFromController extends Thread{
                         newImageMessageBox.getChildren().add(newImageView);
                         newImageMessageBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                     }else {
-                        messageArea.setAlignment(Pos.BOTTOM_RIGHT);
+                        newImageMessageBox.setAlignment(Pos.BOTTOM_RIGHT);
                         Text text1 = new Text(": Me");
                         newImageMessageBox.getChildren().add(text1);
                         newImageMessageBox.getChildren().add(newImageView);
@@ -182,5 +217,29 @@ public class ClientFromController extends Thread{
     @FXML
     void textMessageOnAction(ActionEvent event) throws IOException {
         btnSendOnAction(event);
+    }
+    //for emoji
+    private class EmojiCell extends javafx.scene.control.ListCell<Emoji> {
+        @Override
+        protected void updateItem(Emoji item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                setText(null);
+            } else {
+                Text emojiText = new Text(item.getUnicode());
+                emojiText.setFont(Font.font(30.0));
+                emojiText.setFill(Color.BLACK);
+                Rectangle backgroundRect = new Rectangle(30.0, 30.0);
+                // Set the background color
+                backgroundRect.setFill(Color.YELLOW);
+
+                StackPane stackPane = new StackPane(backgroundRect, emojiText);
+                setGraphic(stackPane);
+
+                setOnMouseClicked(event -> {
+                    System.out.println("Clicked Emoji Code: " + item.getAliases().get(0));
+                });
+            }
+        }
     }
 }
