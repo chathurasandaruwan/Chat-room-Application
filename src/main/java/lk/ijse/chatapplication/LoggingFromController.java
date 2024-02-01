@@ -1,6 +1,5 @@
 package lk.ijse.chatapplication;
 
-import com.jfoenix.controls.JFXTextField;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,7 +47,11 @@ public class LoggingFromController extends Application {
         stage.setTitle("CHAT ROOM");
         stage.show();
         textUserName.clear();
+    }
 
+    @FXML
+    void textUserNameOnAction(ActionEvent event) throws IOException {
+        btnLogInOnAction(event);
     }
 
 }

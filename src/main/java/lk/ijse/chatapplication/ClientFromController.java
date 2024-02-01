@@ -1,9 +1,6 @@
 package lk.ijse.chatapplication;
 
 import com.vdurmont.emoji.Emoji;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import com.vdurmont.emoji.EmojiLoader;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import javafx.application.Platform;
@@ -20,9 +17,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -32,7 +30,6 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class ClientFromController extends Thread{
     @FXML
@@ -78,20 +75,16 @@ public class ClientFromController extends Thread{
     }
 
     @FXML
-    void btnSendOnAction(ActionEvent event) throws IOException {
+    void btnSendOnAction(ActionEvent event) {
         String msg = textMessage.getText();
         out.println(lblUserName.getText() + ": " + msg);
         textMessage.clear();
     }
 
     @FXML
-    void sendImage(MouseEvent event) throws IOException {
+    void sendImage(MouseEvent event) {
         Stage primaryStage = new Stage();
-        fileChooser.setTitle("Choose an Image File");/*
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp"),
-                new FileChooser.ExtensionFilter("All Files", "*.*")
-        );*/
+        fileChooser.setTitle("Choose an Image File");
         this.selectedFile = fileChooser.showOpenDialog(primaryStage);
         out.println(lblUserName.getText() + " " + "img" + selectedFile.getPath());
 
@@ -99,7 +92,6 @@ public class ClientFromController extends Thread{
     @FXML
     void emogiIconOnAction(MouseEvent event) {
         ObservableList<Emoji> emojiList = FXCollections.observableArrayList(EmojiManager.getAll());
-//        Stage primaryStage = new Stage();
         ListView<Emoji> listView = new ListView<>(emojiList);
         listView.setCellFactory(param -> new EmojiCell());
 
@@ -140,41 +132,8 @@ public class ClientFromController extends Thread{
                 if (st.length() > 3) {
                     firstChars = st.substring(0, 3);
                 }
-      /*          if (firstChars.equalsIgnoreCase("emj")){
-                    //String emojiCode = ":smile:";
-
-                    //String emojiCharacter = EmojiParser.parseToUnicode(emojiCode);
-                    //out.println(emojiCharacter);
-                    TextFlow tempFlow = new TextFlow();
-                   // Text emojiText = new Text(emojiCharacter + " ");
-                  //  tempFlow.getChildren().add(emojiText);
-
-                    tempFlow.setMaxWidth(200);
-
-                    TextFlow flow = new TextFlow(tempFlow);
-
-                    HBox hBox = new HBox(12);
-
-                    if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
-                        messageArea.setAlignment(Pos.TOP_LEFT);
-                        hBox.setAlignment(Pos.CENTER_LEFT);
-                        hBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
-                        flow.setStyle("-fx-background-color: white;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: black;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
-                        hBox.getChildren().add(flow);
-                    } else {
-                        Text text2 = new Text(fullMsg + ": Me");
-                        TextFlow flow2 = new TextFlow(text2);
-                        hBox.setAlignment(Pos.BOTTOM_RIGHT);
-                        hBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
-                        flow2.setStyle("-fx-background-color:  #3dd3d0 ;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
-                        hBox.getChildren().add(flow2);
-                    }
-
-                    Platform.runLater(() -> messageArea.getChildren().addAll(hBox));
-
-
-
-                }else*/ if (firstChars.equalsIgnoreCase("img")) {
+                //sending imagers
+                if (firstChars.equalsIgnoreCase("img")) {
 
                     st = st.substring(3, st.length() - 1);
 
@@ -194,18 +153,18 @@ public class ClientFromController extends Thread{
                         Text text1 = new Text("  " + cmd + " :");
                         newImageMessageBox.getChildren().add(text1);
                         newImageMessageBox.getChildren().add(newImageView);
-                        newImageMessageBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                        newImageMessageBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 100;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                     }else {
                         newImageMessageBox.setAlignment(Pos.BOTTOM_RIGHT);
                         Text text1 = new Text(": Me");
                         newImageMessageBox.getChildren().add(text1);
                         newImageMessageBox.getChildren().add(newImageView);
-                        newImageMessageBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                        newImageMessageBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 100;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                     }
                     Platform.runLater(() -> messageArea.getChildren().addAll(newImageMessageBox));
 
                 }else {
-
+                    //send String msg
                     TextFlow tempFlow = new TextFlow();
 
                     if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
@@ -215,7 +174,7 @@ public class ClientFromController extends Thread{
                     }
 
                     tempFlow.getChildren().add(text);
-                    tempFlow.setMaxWidth(100);
+                    tempFlow.setMaxWidth(300);
 
                     TextFlow flow = new TextFlow(tempFlow);
 
@@ -224,14 +183,14 @@ public class ClientFromController extends Thread{
                     if (!cmd.equalsIgnoreCase(lblUserName.getText() + ":")) {
                         messageArea.setAlignment(Pos.TOP_LEFT);
                         hBox.setAlignment(Pos.CENTER_LEFT);
-                        hBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                        hBox.setStyle("-fx-alignment: center-left;-fx-fill-height: true;-fx-min-height: 80;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                         flow.setStyle("-fx-background-color: white;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                         hBox.getChildren().add(flow);
                     } else {
                         Text text2 = new Text(fullMsg + ": Me");
                         TextFlow flow2 = new TextFlow(text2);
                         hBox.setAlignment(Pos.BOTTOM_RIGHT);
-                        hBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
+                        hBox.setStyle("-fx-alignment: center-right;-fx-fill-height: true;-fx-min-height: 80;-fx-pref-width: 860;-fx-max-width: 860;-fx-padding: 10");
                         flow2.setStyle("-fx-background-color:  #3dd3d0 ;-fx-background-radius:15;-fx-font-size: 15;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                         hBox.getChildren().add(flow2);
                     }
@@ -268,15 +227,9 @@ public class ClientFromController extends Thread{
                 setGraphic(stackPane);
 
                 setOnMouseClicked(event -> {
-                    System.out.println("Clicked Emoji Code: " + item.getAliases().get(0));
                     String emojiCharacter = EmojiParser.parseToUnicode(":"+item.getAliases().get(0)+":");
-                    //System.out.println("text mssg "+textMessage.getText());
-                  /*  if (textMessage.getText()!=null){
-                        textMessage.setText(emojiCharacter);
-                    }else {*/
                     textMessage.setText(textMessage.getText()+emojiCharacter);
-                        primaryStage.close();
-                  //  }
+                    primaryStage.close();
                 });
             }
         }

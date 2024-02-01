@@ -38,7 +38,6 @@ public class ConnectionHandler extends Thread{
     public void sendMessage(String message) throws IOException {
         for (ConnectionHandler connectionHandler : clientsArrayList) {
             connectionHandler.out.println(message);
-            System.out.println(message);
         }
     }
 
